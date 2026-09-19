@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3-Month Hustle Dashboard | BCA to PM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        strawberry: {
+                            50: '#FFF5F7',
+                            100: '#FFE3E8',
+                            200: '#FFC2CD',
+                            300: '#FA9BB0',
+                            400: '#FF6B8B',
+                            500: '#E84A6F',
+                            600: '#C73255',
+                            700: '#9B1D3B',
+                            800: '#73132A',
+                            900: '#4A0C1B',
+                        },
+                        matcha: {
+                            50: '#F4F7F4',
+                            100: '#E3ECE3',
+                            200: '#C2D7C3',
+                            300: '#9CBF9E',
+                            400: '#75A278',
+                            500: '#558558',
+                            600: '#3F6842',
+                            700: '#2F4D31',
+                            800: '#203421',
+                            900: '#132114',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #FFE2EC 0%, #FFF0F5 50%, #EAF2EB 100%);
+            color: #2D3A2E;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .soft-card {
+            background: linear-gradient(135deg, rgba(255, 235, 241, 0.95) 0%, rgba(242, 248, 243, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid #C2D7C3;
+            box-shadow: 0 6px 20px -4px rgba(63, 104, 66, 0.12);
+            border-radius: 1.25rem;
+        }
+        .soft-card-accent {
+            background: linear-gradient(135deg, #FFD8E4 0%, #E3ECE3 100%);
+            border: 1px solid #FFC2CD;
+            border-radius: 1.25rem;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F4F7F4;
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #9CBF9E;
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #75A278;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-12">
+
+    <header class="sticky top-0 z-50 bg-gradient-to-r from-strawberry-100/90 via-strawberry-50/90 to-matcha-100/90 backdrop-blur-md border-b border-matcha-200/80 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
+            
+            <!-- App Logo & Title -->
+            <div class="flex items-center space-x-3">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-matcha-600 via-matcha-500 to-strawberry-400 flex items-center justify-center text-white shadow-md border-2 border-white relative group transform transition duration-300 hover:scale-105">
+                    <div class="flex items-center justify-center space-x-1 text-base">
+                        <i class="fa-solid fa-graduation-cap text-lg text-white"></i>
+                        <span class="text-xs font-bold -ml-1">⚡</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-xl font-extrabold bg-gradient-to-r from-matcha-800 via-matcha-700 to-strawberry-600 bg-clip-text text-transparent">
+                            Hustle Dashboard
+                        </h1>
+                        <span class="text-[10px] bg-matcha-700 text-white font-bold px-2 py-0.5 rounded-full border border-matcha-800">
+                            BCA Study Hub 🎓
+                        </span>
+                    </div>
+                    <p class="text-xs text-matcha-800 font-bold">BCA to Product Management Prep</p>
+                </div>
+            </div>
+
+            <!-- Top Header Right Bar: Live Clock & Streak Status -->
+            <div class="flex items-center space-x-3">
+                <!-- Live Clock Widget -->
+                <div class="hidden sm:flex items-center space-x-2 bg-strawberry-50/80 px-3.5 py-2 rounded-2xl border border-strawberry-200 text-xs font-bold text-strawberry-800" title="Live Time">
+                    <i class="fa-regular fa-clock text-strawberry-500"></i>
+                    <span id="liveClockDisplay">00:00:00 AM</span>
+                </div>
+
+                <!-- Streak & Freeze Quick Display Bar -->
+                <div class="flex items-center space-x-3 bg-matcha-50/80 p-2 px-4 rounded-2xl border border-matcha-200">
+                    <div class="flex items-center space-x-2" title="Current Daily Streak">
+                        <span class="text-xl">🔥</span>
+                        <div>
+                            <span id="streakDisplay" class="font-extrabold text-matcha-900 text-base">0</span>
+                            <span class="text-xs text-matcha-700 font-medium"> Day Streak</span>
+                        </div>
+                    </div>
+                    <div class="h-6 w-px bg-matcha-200 mx-1"></div>
+                    <div class="flex items-center space-x-2" title="Streak Freezes Remaining">
+                        <span class="text-xl">🧊</span>
+                        <div>
+                            <span id="freezeDisplay" class="font-extrabold text-blue-700 text-base">2</span>
+                            <span class="text-xs text-blue-600 font-medium"> Freezes</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+
+        <!-- Navigation Tabs -->
+        <div class="flex space-x-2 overflow-x-auto custom-scrollbar pb-2 mb-6 border-b border-matcha-200">
+            <button onclick="switchTab('daily')" id="tab-daily" class="tab-btn active-tab flex items-center space-x-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all whitespace-nowrap bg-matcha-600 text-white shadow-md shadow-matcha-200">
+                <i class="fa-solid fa-calendar-check text-white"></i>
+                <span>Daily Routine & Metrics</span>
+            </button>
+            <button onclick="switchTab('pmvault')" id="tab-pmvault" class="tab-btn flex items-center space-x-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all whitespace-nowrap text-matcha-800 hover:bg-matcha-100/70">
+                <i class="fa-solid fa-brain text-strawberry-500"></i>
+                <span>PM Vault & Frameworks</span>
+            </button>
+            <button onclick="switchTab('roadmap')" id="tab-roadmap" class="tab-btn flex items-center space-x-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all whitespace-nowrap text-matcha-800 hover:bg-matcha-100/70">
+                <i class="fa-solid fa-map-location-dot text-strawberry-500"></i>
+                <span>3-Month Roadmap</span>
+            </button>
+            <button onclick="switchTab('roles')" id="tab-roles" class="tab-btn flex items-center space-x-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all whitespace-nowrap text-matcha-800 hover:bg-matcha-100/70">
+                <i class="fa-solid fa-briefcase text-strawberry-500"></i>
+                <span>Alternative Roles Guide</span>
+            </button>
+            <button onclick="switchTab('tasks')" id="tab-tasks" class="tab-btn flex items-center space-x-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all whitespace-nowrap text-matcha-800 hover:bg-matcha-100/70">
+                <i class="fa-solid fa-list-check text-strawberry-500"></i>
+                <span>Task Manager</span>
+            </button>
+        </div>
+
+        <!-- TAB 1: DAILY ROUTINE & METRICS -->
+        <div id="content-daily" class="tab-content block space-y-6">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Streak Freeze Info Card -->
+                <div class="soft-card p-5 relative overflow-hidden flex flex-col justify-between border-strawberry-200">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-strawberry-500 tracking-wider uppercase">Protection System</span>
+                            <h3 class="text-lg font-bold text-strawberry-900 mt-1">Streak Freeze Safe</h3>
+                        </div>
+                        <span class="text-3xl">🧊</span>
+                    </div>
+                    <p class="text-xs text-strawberry-800/80 my-3 leading-relaxed">
+                        If you miss a day due to college exams or workload, a <span class="font-semibold text-blue-600">Streak Freeze</span> automatically protects your streak from resetting to 0!
+                    </p>
+                    <div class="flex items-center justify-between bg-strawberry-50/80 p-3 rounded-xl border border-strawberry-200">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-snowflake text-blue-500 text-lg"></i>
+                            <span class="text-sm font-bold text-strawberry-900">Available: <span id="freezeCountCard">2</span> / 2</span>
+                        </div>
+                        <button onclick="useFreezeManual()" class="px-3 py-1.5 bg-strawberry-100/80 hover:bg-strawberry-200 text-blue-700 text-xs font-bold rounded-lg border border-strawberry-200 transition">
+                            Use 1 Freeze
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Daily Completion Progress Card -->
+                <div class="soft-card p-5 flex flex-col justify-between md:col-span-2 border-matcha-200">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-matcha-600 tracking-wider uppercase">Today's Goal Tracker</span>
+                            <span id="completionPercentage" class="text-sm font-extrabold text-strawberry-600">0% Done</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-matcha-900">Daily Execution Progress</h3>
+                        <p class="text-xs text-matcha-700/80 mt-1">Complete your core timeblocks to maintain your streak automatically.</p>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="my-4">
+                        <div class="w-full bg-matcha-100 rounded-full h-4 overflow-hidden border border-matcha-200">
+                            <div id="progressBar" class="bg-gradient-to-r from-strawberry-400 to-matcha-500 h-4 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs text-matcha-800 font-medium">
+                        <span id="completedBlocksCount">0 / 7 Blocks Completed</span>
+                        <button onclick="resetDailyChecklist()" class="text-strawberry-600 hover:text-strawberry-800 underline font-semibold">
+                            Reset Today's Checklist
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="soft-card p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-matcha-900 flex items-center gap-2">
+                            <i class="fa-regular fa-clock text-strawberry-500"></i> Time-Blocked Daily Schedule
+                        </h2>
+                        <p class="text-xs text-matcha-700">Tailored for BCA College + Product Management Prep</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3" id="routineList">
+                    <!-- Dynamic Checklist Inserted Here -->
+                </div>
+            </div>
+
+            <div class="soft-card p-6">
+                <h2 class="text-lg font-bold text-matcha-900 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-line text-matcha-600"></i> Skill Practice Counter
+                </h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4" id="skillCountersGrid">
+                    <!-- Counters added via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: PM VAULT & KNOWLEDGE BASE -->
+        <div id="content-pmvault" class="tab-content hidden space-y-6">
+            <div class="soft-card p-6">
+                <h2 class="text-xl font-bold text-matcha-900 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-book-bookmark text-strawberry-500"></i> PM Vault & Essential Frameworks
+                </h2>
+                <p class="text-xs text-matcha-700 mb-6">Quick reference guides for Product Management interview preparation and PRDs.</p>
+
+                <!-- Framework Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- CIRCLES Framework -->
+                    <div class="soft-card-accent p-5">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-bold text-strawberry-900 text-base">CIRCLES Framework</h3>
+                            <span class="bg-strawberry-200 text-strawberry-800 text-xs px-2.5 py-1 rounded-full font-bold">Design</span>
+                        </div>
+                        <ul class="text-xs text-strawberry-900 space-y-1.5 mt-3">
+                            <li><strong class="text-strawberry-950">C:</strong> Comprehend Context (Goal, Constraints)</li>
+                            <li><strong class="text-strawberry-950">I:</strong> Identify Customers (Personas)</li>
+                            <li><strong class="text-strawberry-950">R:</strong> Report Customer Needs (Pain Points)</li>
+                            <li><strong class="text-strawberry-950">C:</strong> Cut Prioritization (RICE/MoSCoW)</li>
+                            <li><strong class="text-strawberry-950">L:</strong> List Solutions (Creative & Feasible)</li>
+                            <li><strong class="text-strawberry-950">E:</strong> Evaluate Trade-offs (Pros & Cons)</li>
+                            <li><strong class="text-strawberry-950">S:</strong> Summarize Recommendation</li>
+                        </ul>
+                    </div>
+
+                    <!-- BUS Framework -->
+                    <div class="soft-card-accent p-5">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-bold text-strawberry-900 text-base">BUS Framework</h3>
+                            <span class="bg-matcha-200 text-matcha-800 text-xs px-2.5 py-1 rounded-full font-bold">Root Cause</span>
+                        </div>
+                        <ul class="text-xs text-strawberry-900 space-y-1.5 mt-3">
+                            <li><strong class="text-strawberry-950">B:</strong> Business Context (Clarify metrics dropped & timeframe)</li>
+                            <li><strong class="text-strawberry-950">U:</strong> User Segment Isolation (OS, Region, Age, Version)</li>
+                            <li><strong class="text-strawberry-950">S:</strong> Specific Drivers (Internal releases vs External trends)</li>
+                        </ul>
+                    </div>
+
+                    <!-- HEART Metrics -->
+                    <div class="soft-card-accent p-5">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-bold text-strawberry-900 text-base">HEART Framework</h3>
+                            <span class="bg-matcha-200 text-matcha-800 text-xs px-2.5 py-1 rounded-full font-bold">Metrics</span>
+                        </div>
+                        <ul class="text-xs text-strawberry-900 space-y-1.5 mt-3">
+                            <li><strong class="text-strawberry-950">H:</strong> Happiness (NPS, CSAT, Satisfaction)</li>
+                            <li><strong class="text-strawberry-950">E:</strong> Engagement (DAU/MAU, Session Frequency)</li>
+                            <li><strong class="text-strawberry-950">A:</strong> Adoption (New Signups, Feature Adoption)</li>
+                            <li><strong class="text-strawberry-950">R:</strong> Retention (Churn Rate, Repeat Visits)</li>
+                            <li><strong class="text-strawberry-950">T:</strong> Task Success (Completion Time, Error Rate)</li>
+                        </ul>
+                    </div>
+
+                    <!-- Prioritization Models -->
+                    <div class="soft-card-accent p-5">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-bold text-strawberry-900 text-base">RICE & MoSCoW Prioritization</h3>
+                            <span class="bg-strawberry-200 text-strawberry-800 text-xs px-2.5 py-1 rounded-full font-bold">Strategy</span>
+                        </div>
+                        <div class="text-xs text-strawberry-900 space-y-2 mt-3">
+                            <p><strong class="text-strawberry-950">RICE Score:</strong> (Reach × Impact × Confidence) / Effort</p>
+                            <p><strong class="text-strawberry-950">MoSCoW:</strong> Must-Have, Should-Have, Could-Have, Won't-Have</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Notes Section -->
+                <div class="mt-8">
+                    <h3 class="text-md font-bold text-matcha-900 mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square text-strawberry-500"></i> Personal PM Study Notes (Auto-Saved)
+                    </h3>
+                    <textarea id="pmNotes" rows="8" placeholder="Type your case study notes, interview questions, or project ideas here..." class="w-full p-4 rounded-xl border border-matcha-200 focus:ring-2 focus:ring-matcha-400 focus:outline-none text-sm text-matcha-900 bg-matcha-50/50 custom-scrollbar"></textarea>
+                    <div class="flex justify-between items-center mt-2">
+                        <span id="saveStatus" class="text-xs text-matcha-600 italic">Auto-saved to local browser storage</span>
+                        <button onclick="clearNotes()" class="text-xs text-strawberry-600 hover:underline">Clear Notes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: 3-MONTH ROADMAP -->
+        <div id="content-roadmap" class="tab-content hidden space-y-6">
+            <div class="soft-card p-6">
+                <h2 class="text-xl font-bold text-matcha-900 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-map text-matcha-600"></i> 3-Month BCA to PM Roadmap
+                </h2>
+                <p class="text-xs text-matcha-700 mb-6">Structured month-by-month targets to build a strong PM candidate profile.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Month 1 -->
+                    <div class="soft-card p-5 border-t-4 border-t-strawberry-400">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-strawberry-600 uppercase">Month 1</span>
+                            <span class="bg-strawberry-100 text-strawberry-800 text-xs px-2 py-0.5 rounded-md font-semibold">Foundation</span>
+                        </div>
+                        <h3 class="font-bold text-strawberry-900 text-base mb-3">SQL, DSA & PM Basics</h3>
+                        <ul class="text-xs text-strawberry-900 space-y-2.5">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-matcha-600 mt-0.5"></i> Learn SQL (JOINs, Aggregations, Subqueries).</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-matcha-600 mt-0.5"></i> Solve 30+ basic/medium DSA questions in C++/Java/Python.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-matcha-600 mt-0.5"></i> Read "Decode and Conquer" for PM frameworks.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-matcha-600 mt-0.5"></i> Set up Power BI & build 1 sample dashboard.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Month 2 -->
+                    <div class="soft-card p-5 border-t-4 border-t-matcha-500">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-matcha-600 uppercase">Month 2</span>
+                            <span class="bg-matcha-100 text-matcha-800 text-xs px-2 py-0.5 rounded-md font-semibold">Application</span>
+                        </div>
+                        <h3 class="font-bold text-matcha-900 text-base mb-3">PM Teardowns & Projects</h3>
+                        <ul class="text-xs text-matcha-900 space-y-2.5">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-matcha-600 mt-0.5"></i> Write 2 Product Teardowns (e.g., Swiggy, Zomato, Spotify).</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-matcha-600 mt-0.5"></i> Draft 1 complete PRD in Notion/Google Docs.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-matcha-600 mt-0.5"></i> Build a polished SQL + Power BI Analytics Project.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-matcha-600 mt-0.5"></i> Update Resume focusing on BCA tech + PM leadership.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Month 3 -->
+                    <div class="soft-card p-5 border-t-4 border-t-strawberry-500">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-strawberry-600 uppercase">Month 3</span>
+                            <span class="bg-strawberry-100 text-strawberry-800 text-xs px-2 py-0.5 rounded-md font-semibold">Execution</span>
+                        </div>
+                        <h3 class="font-bold text-strawberry-900 text-base mb-3">College Exams & Job Outreach</h3>
+                        <ul class="text-xs text-strawberry-900 space-y-2.5">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-matcha-600 mt-0.5"></i> Balance BCA final exam preparation alongside PM prep.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-matcha-600 mt-0.5"></i> Apply to APM, Product Analyst & BA internships.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-matcha-600 mt-0.5"></i> Conduct 10+ mock PM interviews with peers.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-matcha-600 mt-0.5"></i> Cold outreach to 30 PMs on LinkedIn.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: ALTERNATIVE ROLES GUIDE -->
+        <div id="content-roles" class="tab-content hidden space-y-6">
+            <div class="soft-card p-6">
+                <h2 class="text-xl font-bold text-matcha-900 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-user-astronaut text-strawberry-500"></i> Strategic Gateway Roles
+                </h2>
+                <p class="text-xs text-matcha-700 mb-6">If direct APM entry is competitive, target these high-converting roles to transition internally into PM within 6-12 months.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <div class="bg-gradient-to-br from-strawberry-50/90 to-matcha-50/90 p-4 rounded-xl border border-matcha-200 shadow-sm">
+                        <h3 class="font-bold text-matcha-900 text-sm">Product Analyst</h3>
+                        <p class="text-xs text-matcha-700 mt-1">Focus: Product metrics, SQL, A/B testing dashboards.</p>
+                        <p class="text-xs text-strawberry-800 mt-2 font-medium">BCA Edge: High SQL + data visualization skills.</p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-strawberry-50/90 to-matcha-50/90 p-4 rounded-xl border border-matcha-200 shadow-sm">
+                        <h3 class="font-bold text-matcha-900 text-sm">Business Analyst</h3>
+                        <p class="text-xs text-matcha-700 mt-1">Focus: Business requirements, process modeling, client comms.</p>
+                        <p class="text-xs text-strawberry-800 mt-2 font-medium">BCA Edge: Bridging tech capabilities with business needs.</p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-strawberry-50/90 to-matcha-50/90 p-4 rounded-xl border border-matcha-200 shadow-sm">
+                        <h3 class="font-bold text-matcha-900 text-sm">Associate Product Manager (APM)</h3>
+                        <p class="text-xs text-matcha-700 mt-1">Focus: Feature ownership, PRDs, user research, sprints.</p>
+                        <p class="text-xs text-strawberry-800 mt-2 font-medium">BCA Edge: Technical background makes sprint planning smooth.</p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-strawberry-50/90 to-matcha-50/90 p-4 rounded-xl border border-matcha-200 shadow-sm">
+                        <h3 class="font-bold text-matcha-900 text-sm">Data Analyst</h3>
+                        <p class="text-xs text-matcha-700 mt-1">Focus: Power BI/Tableau, Python analytics, SQL queries.</p>
+                        <p class="text-xs text-strawberry-800 mt-2 font-medium">BCA Edge: Strong database & logic foundations.</p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-strawberry-50/90 to-matcha-50/90 p-4 rounded-xl border border-matcha-200 shadow-sm">
+                        <h3 class="font-bold text-matcha-900 text-sm">Product Operations</h3>
+                        <p class="text-xs text-matcha-700 mt-1">Focus: Tooling, workflow optimization, customer feedback loops.</p>
+                        <p class="text-xs text-strawberry-800 mt-2 font-medium">BCA Edge: Process automation & tech tool efficiency.</p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-strawberry-50/90 to-matcha-50/90 p-4 rounded-xl border border-matcha-200 shadow-sm">
+                        <h3 class="font-bold text-matcha-900 text-sm">Product QA / Technical Writer</h3>
+                        <p class="text-xs text-matcha-700 mt-1">Focus: Release quality, user stories verification, product docs.</p>
+                        <p class="text-xs text-strawberry-800 mt-2 font-medium">BCA Edge: Understanding edge cases and code architecture.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: TASK MANAGER -->
+        <div id="content-tasks" class="tab-content hidden space-y-6">
+            <div class="soft-card p-6">
+                <h2 class="text-xl font-bold text-matcha-900 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-matcha-600"></i> Personal Task Manager
+                </h2>
+                <p class="text-xs text-matcha-700 mb-4">Add custom college assignments, PM prep tasks, or application deadlines.</p>
+
+                <!-- Task Input Bar -->
+                <div class="flex gap-2 mb-6">
+                    <input type="text" id="newTaskInput" placeholder="Add a new task (e.g. Finish PM Swiggy Case Study)..." class="flex-grow p-3 rounded-xl border border-matcha-200 text-sm focus:outline-none focus:ring-2 focus:ring-matcha-400 bg-matcha-50/50">
+                    <button onclick="addNewTask()" class="px-5 py-3 bg-matcha-600 hover:bg-matcha-700 text-white font-bold text-sm rounded-xl transition shadow-md shadow-matcha-200">
+                        Add Task
+                    </button>
+                </div>
+
+                <!-- Task List -->
+                <div class="space-y-2.5" id="customTaskList">
+                    <!-- Tasks render here dynamically -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Default Data Structure
+        const DEFAULT_ROUTINE = [
+            { id: 1, time: '07:30 AM - 08:30 AM', title: 'DSA Practice', desc: '1-2 LeetCode questions in C++/Java/Python', done: false },
+            { id: 2, time: '09:00 AM - 03:00 PM', title: 'College Classes & Internship Work', desc: 'Attend lectures (9 AM - 3 PM) & handle internship tasks', done: false },
+            { id: 3, time: '03:15 PM - 04:45 PM', title: 'SQL & Power BI Practice', desc: 'Queries, JOINs, or building dashboard charts', done: false },
+            { id: 4, time: '04:45 PM - 06:30 PM', title: 'PM Prep & Applications', desc: 'Frameworks, Case Studies, Resume & LinkedIn Networking', done: false },
+            { id: 5, time: '07:00 PM - 08:00 PM', title: 'Workout Hour', desc: 'Gym or Home Workout (Fixed 7 PM time slot)', done: false },
+            { id: 6, time: '08:00 PM - 09:00 PM', title: 'Dinner & Relax', desc: 'Dinner break, family time, chill (No study/work)', done: false },
+            { id: 7, time: '09:00 PM - 10:30 PM', title: 'BCA College Exam Prep', desc: 'Study college syllabus subjects & semester exam revision', done: false },
+            { id: 8, time: '10:30 PM - 11:15 PM', title: 'Portfolio & Wrap Up', desc: 'Update notes, review today\'s tasks & plan tomorrow', done: false }
+        ];
+
+        const DEFAULT_COUNTERS = {
+            dsa: 0,
+            sql: 0,
+            powerbi: 0,
+            pmCases: 0,
+            workoutHours: 0
+        };
+
+        // State Initialization
+        let state = {
+            streak: 0,
+            freezes: 2,
+            lastCompletedDate: null,
+            routine: JSON.parse(localStorage.getItem('bca_pm_routine')) || DEFAULT_ROUTINE,
+            counters: JSON.parse(localStorage.getItem('bca_pm_counters')) || DEFAULT_COUNTERS,
+            tasks: JSON.parse(localStorage.getItem('bca_pm_tasks')) || [
+                { id: 1, text: 'Review CIRCLES Framework for PM interviews', done: true },
+                { id: 2, text: 'Build SQL Practice Database for Portfolio', done: false }
+            ],
+            notes: localStorage.getItem('bca_pm_notes') || ''
+        };
+
+        // On Page Load Initialization
+        window.onload = function() {
+            startLiveClock();
+            loadStreakData();
+            checkAndHandleStreakOnLoad();
+            renderRoutine();
+            renderCounters();
+            renderTasks();
+            setupNotes();
+        };
+
+        // --- LIVE CLOCK ---
+        function startLiveClock() {
+            const updateClock = () => {
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const clockEl = document.getElementById('liveClockDisplay');
+                if (clockEl) clockEl.innerText = timeStr;
+            };
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        // --- STREAK & FREEZE SYSTEM ---
+        function loadStreakData() {
+            state.streak = parseInt(localStorage.getItem('bca_pm_streak') || '0');
+            state.freezes = parseInt(localStorage.getItem('bca_pm_freezes') || '2');
+            state.lastCompletedDate = localStorage.getItem('bca_pm_last_date') || null;
+            updateStreakUI();
+        }
+
+        function saveStreakData() {
+            localStorage.setItem('bca_pm_streak', state.streak);
+            localStorage.setItem('bca_pm_freezes', state.freezes);
+            localStorage.setItem('bca_pm_last_date', state.lastCompletedDate || '');
+            updateStreakUI();
+        }
+
+        function updateStreakUI() {
+            document.getElementById('streakDisplay').innerText = state.streak;
+            document.getElementById('freezeDisplay').innerText = state.freezes;
+            document.getElementById('freezeCountCard').innerText = state.freezes;
+        }
+
+        function checkAndHandleStreakOnLoad() {
+            const todayStr = new Date().toDateString();
+            
+            if (!state.lastCompletedDate) return;
+
+            const lastDate = new Date(state.lastCompletedDate);
+            const today = new Date(todayStr);
+            const diffTime = Math.abs(today - lastDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            // If more than 1 day missed
+            if (diffDays > 1) {
+                const missedDays = diffDays - 1;
+                if (state.freezes >= missedDays) {
+                    state.freezes -= missedDays;
+                    saveStreakData();
+                    showNotification(`❄️ Streak Freeze Used! You missed ${missedDays} day(s), but your streak is protected!`);
+                } else {
+                    state.streak = 0;
+                    state.freezes = 2; // Reset freezes back
+                    saveStreakData();
+                    showNotification('⚠️ Streak reset due to missed days without available freezes.');
+                }
+            }
+        }
+
+        function checkRoutineCompletion() {
+            const allDone = state.routine.every(item => item.done);
+            const todayStr = new Date().toDateString();
+
+            if (allDone && state.lastCompletedDate !== todayStr) {
+                state.streak += 1;
+                state.lastCompletedDate = todayStr;
+                
+                // Reward 1 extra freeze every 7 streak days (max cap 3)
+                if (state.streak % 7 === 0 && state.freezes < 3) {
+                    state.freezes += 1;
+                    showNotification('🎉 7-Day Milestone! +1 Streak Freeze Earned!');
+                } else {
+                    showNotification('🎉 All daily routines completed! Streak incremented!');
+                }
+
+                saveStreakData();
+            }
+        }
+
+        function useFreezeManual() {
+            if (state.freezes > 0) {
+                state.freezes -= 1;
+                saveStreakData();
+                showNotification('❄️ 1 Streak Freeze applied to safeguard your current streak!');
+            } else {
+                showNotification('❌ No Streak Freezes available!');
+            }
+        }
+
+        // --- ROUTINE & CHECKLIST ---
+        function toggleRoutine(index) {
+            state.routine[index].done = !state.routine[index].done;
+            renderRoutine();
+        }
+
+        function resetDailyChecklist() {
+            state.routine.forEach(item => item.done = false);
+            renderRoutine();
+            showNotification("Today's checklist reset successfully!");
+        }
+
+        function renderRoutine() {
+            const listEl = document.getElementById('routineList');
+            listEl.innerHTML = '';
+
+            let completed = 0;
+
+            state.routine.forEach((item, index) => {
+                if (item.done) completed++;
+
+                const card = document.createElement('div');
+                card.className = `flex items-center justify-between p-3.5 rounded-xl border transition-all ${
+                    item.done ? 'bg-matcha-100/60 border-matcha-300 opacity-90' : 'bg-gradient-to-r from-strawberry-50/80 to-matcha-50/80 border-matcha-200 hover:border-matcha-300'
+                }`;
+
+                card.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleRoutine(${index})" class="w-5 h-5 accent-matcha-600 rounded cursor-pointer">
+                        <div>
+                            <span class="text-xs font-bold text-strawberry-600">${item.time}</span>
+                            <h4 class="text-sm font-bold text-matcha-900 ${item.done ? 'line-through text-matcha-600' : ''}">${item.title}</h4>
+                            <p class="text-xs text-matcha-700/80">${item.desc}</p>
+                        </div>
+                    </div>
+                    <span class="text-xs px-2.5 py-1 rounded-full font-medium ${item.done ? 'bg-matcha-200 text-matcha-900' : 'bg-matcha-50 text-matcha-700'}">
+                        ${item.done ? 'Completed' : 'Pending'}
+                    </span>
+                `;
+                listEl.appendChild(card);
+            });
+
+            // Update Progress Bar
+            const percent = Math.round((completed / state.routine.length) * 100);
+            document.getElementById('progressBar').style.width = `${percent}%`;
+            document.getElementById('completionPercentage').innerText = `${percent}% Done`;
+            document.getElementById('completedBlocksCount').innerText = `${completed} / ${state.routine.length} Blocks Completed`;
+
+            localStorage.setItem('bca_pm_routine', JSON.stringify(state.routine));
+            checkRoutineCompletion();
+        }
+
+        // --- SKILL COUNTERS ---
+        function updateCounter(key, delta) {
+            if (!state.counters[key]) state.counters[key] = 0;
+            state.counters[key] = Math.max(0, state.counters[key] + delta);
+            localStorage.setItem('bca_pm_counters', JSON.stringify(state.counters));
+            renderCounters();
+        }
+
+        function renderCounters() {
+            const grid = document.getElementById('skillCountersGrid');
+            grid.innerHTML = '';
+
+            const items = [
+                { key: 'dsa', label: 'DSA Solved', icon: '⚡' },
+                { key: 'sql', label: 'SQL Queries', icon: '🛢️' },
+                { key: 'powerbi', label: 'Power BI Dashboards', icon: '📊' },
+                { key: 'pmCases', label: 'PM Teardowns', icon: '🎯' },
+                { key: 'workoutHours', label: 'Workout (Mins)', icon: '💪' }
+            ];
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'bg-gradient-to-br from-strawberry-50/90 to-matcha-50/90 p-4 rounded-xl border border-matcha-200 text-center flex flex-col justify-between shadow-sm';
+                card.innerHTML = `
+                    <div class="text-2xl mb-1">${item.icon}</div>
+                    <span class="text-xs font-bold text-matcha-800">${item.label}</span>
+                    <div class="text-xl font-extrabold text-matcha-900 my-2" id="cnt-${item.key}">${state.counters[item.key] || 0}</div>
+                    <div class="flex justify-center space-x-2 mt-1">
+                        <button onclick="updateCounter('${item.key}', -1)" class="w-8 h-8 rounded-lg bg-strawberry-100 text-strawberry-800 font-bold hover:bg-strawberry-200">-</button>
+                        <button onclick="updateCounter('${item.key}', 1)" class="w-8 h-8 rounded-lg bg-matcha-600 text-white font-bold hover:bg-matcha-700 shadow-sm">+</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- TASK MANAGER ---
+        function renderTasks() {
+            const taskListEl = document.getElementById('customTaskList');
+            if (!taskListEl) return;
+            taskListEl.innerHTML = '';
+
+            if (state.tasks.length === 0) {
+                taskListEl.innerHTML = '<p class="text-xs text-matcha-700 italic p-3">No tasks added yet. Add one above!</p>';
+                return;
+            }
+
+            state.tasks.forEach((task, index) => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between p-3 rounded-xl border border-matcha-200 bg-matcha-50/60';
+                item.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <input type="checkbox" ${task.done ? 'checked' : ''} onchange="toggleTask(${index})" class="w-4 h-4 accent-matcha-600 rounded cursor-pointer">
+                        <span class="text-xs font-semibold ${task.done ? 'line-through text-matcha-500' : 'text-matcha-900'}">${task.text}</span>
+                    </div>
+                    <button onclick="deleteTask(${index})" class="text-strawberry-600 hover:text-strawberry-800 text-xs px-2 py-1"><i class="fa-solid fa-trash"></i></button>
+                `;
+                taskListEl.appendChild(item);
+            });
+
+            localStorage.setItem('bca_pm_tasks', JSON.stringify(state.tasks));
+        }
+
+        function addNewTask() {
+            const input = document.getElementById('newTaskInput');
+            if (!input || !input.value.trim()) return;
+            state.tasks.push({ id: Date.now(), text: input.value.trim(), done: false });
+            input.value = '';
+            renderTasks();
+        }
+
+        function toggleTask(index) {
+            state.tasks[index].done = !state.tasks[index].done;
+            renderTasks();
+        }
+
+        function deleteTask(index) {
+            state.tasks.splice(index, 1);
+            renderTasks();
+        }
+
+        // --- NOTES SYSTEM ---
+        function setupNotes() {
+            const notesEl = document.getElementById('pmNotes');
+            if (!notesEl) return;
+            notesEl.value = state.notes;
+            notesEl.addEventListener('input', (e) => {
+                state.notes = e.target.value;
+                localStorage.setItem('bca_pm_notes', state.notes);
+                const status = document.getElementById('saveStatus');
+                if (status) {
+                    status.innerText = 'Auto-saved to local browser storage at ' + new Date().toLocaleTimeString();
+                }
+            });
+        }
+
+        function clearNotes() {
+            state.notes = '';
+            localStorage.setItem('bca_pm_notes', '');
+            const notesEl = document.getElementById('pmNotes');
+            if (notesEl) notesEl.value = '';
+            showNotification('Notes cleared!');
+        }
+
+        // --- NAVIGATION TABS ---
+        function switchTab(tabKey) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-matcha-600', 'text-white', 'shadow-md', 'shadow-matcha-200');
+                btn.classList.add('text-matcha-800', 'hover:bg-matcha-100/70');
+            });
+
+            document.getElementById(`content-${tabKey}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabKey}`);
+            activeBtn.classList.add('bg-matcha-600', 'text-white', 'shadow-md', 'shadow-matcha-200');
+            activeBtn.classList.remove('text-matcha-800', 'hover:bg-matcha-100/70');
+        }
+
+        // --- NOTIFICATION TOAST ---
+        function showNotification(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-5 right-5 bg-matcha-900 text-white text-xs px-4 py-3 rounded-xl shadow-xl z-50 animate-bounce';
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
+        }
+    </script>
+</body>
+</html>
